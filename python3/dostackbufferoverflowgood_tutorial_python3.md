@@ -110,7 +110,7 @@ that it's properly installed by punching `"!mona"` in to the command input box
 at the bottom of Immunity - it should spit back a bunch of help text in the
 `"Log data"` window.
 
-![Testing `mona.py`](dostackbufferoverflowgood_images/immdbg_test_mona.png)
+![Testing `mona.py`](../../dostackbufferoverflowgood_images/immdbg_test_mona.png)
 
 If you want to follow along with the optional `"Examine the binary"`
 chapter, install IDA.
