@@ -58,7 +58,7 @@ repo for updates.
 
 ![This work is licensed under a Creative Commons Attribution 4.0 International
 License
-<https://creativecommons.org/licenses/by/4.0/>](dostackbufferoverflowgood_images/cc4-by.png)
+<https://creativecommons.org/licenses/by/4.0/>](../dostackbufferoverflowgood_images/cc4-by.png)
 
 Please feel free to use this material however you wish, all I ask is that you
 attribute me as the author. If you improve the material, I would love you to
@@ -195,7 +195,7 @@ keep track of. The most important is the CPU window, shown below. You'll
 understand the purpose of and begin to use the other windows with time.
 
 ![Immunity Debugger User
-Interface](dostackbufferoverflowgood_images/immdbg_interface.png)
+Interface](../dostackbufferoverflowgood_images/immdbg_interface.png)
 
 * Execution controls - allows the process to be restarted, closed, run, paused, stepped into, stepped over, traced into, traced over, executed until return, and for the disassembler to be navigated to a particular memory address.
 * Disassembler - shows the contents of the binary file as assembly instructions. The next instruction to be executed by the CPU is highlighted.
@@ -216,7 +216,7 @@ Program"` (hotkey `F9`) button a couple of times until the process state shows
 `Running`.
 
 !["Run Program"
-button](dostackbufferoverflowgood_images/immdbg_startprocess.png)
+button](../dostackbufferoverflowgood_images/immdbg_startprocess.png)
 
 \framebox{
   \parbox{\textwidth}{
@@ -407,7 +407,7 @@ Launch IDA and load `dostackbufferoverflowgood.exe`
 
 When it asks for how it should handle the file, just click `OK`.
 
-![IDA loading the file](dostackbufferoverflowgood_images/ida_loadfile.png)
+![IDA loading the file](../dostackbufferoverflowgood_images/ida_loadfile.png)
 
 IDA will then prompt you, asking if it should try to load a PDB file from the
 local symbol store or the Microsoft Symbol Server. Click `"No"`. The PDB file
@@ -442,13 +442,13 @@ it's time to dig in.
 In the Functions window, locate `doResponse` and double-click on it.
 
 ![Double-clicking on `doResponse()` in the Functions
-window](dostackbufferoverflowgood_images/ida_doubleclick_do_response.png)
+window](../dostackbufferoverflowgood_images/ida_doubleclick_do_response.png)
 
 This will take us to the disassembly of the `doResponse()` function, within
 which we know our vulnerable `sprintf()` call is.
 
 ![A very zoomed out disassembly of
-`doResponse()`](dostackbufferoverflowgood_images/ida_doresponse_disassembly.png)
+`doResponse()`](../dostackbufferoverflowgood_images/ida_doresponse_disassembly.png)
 
 \newpage
 
@@ -478,7 +478,7 @@ int __cdecl doResponse(SOCKET clientSocket, char *clientName) {
 ```
 
 ![Disassembly of the beginning of
-`doResponse()`](dostackbufferoverflowgood_images/ida_doresponse_disassembly_head.png)
+`doResponse()`](../dostackbufferoverflowgood_images/ida_doresponse_disassembly_head.png)
 
 \newpage
 
@@ -488,7 +488,7 @@ to the caller. We'll ignore the idea of a return value for now as it's out of
 the scope of this tutorial.
 
 ![Disassembly of the end of
-`doResponse()`](dostackbufferoverflowgood_images/ida_doresponse_disassembly_tail.png)
+`doResponse()`](../dostackbufferoverflowgood_images/ida_doresponse_disassembly_tail.png)
 
 We want to make note of the address of this function epilogue so that we can
 examine its workings in Immunity. Conveniently for us, it forms the entirety of
@@ -507,7 +507,7 @@ the only place it is referenced is in a `CALL` from `handleConnection()`. Click
 `OK` to head to that cross-reference.
 
 ![Xrefs to
-`doResponse()`](dostackbufferoverflowgood_images/ida_doresponse_xrefs.png)
+`doResponse()`](../dostackbufferoverflowgood_images/ida_doresponse_xrefs.png)
 
 This will take us to `handleConnection()`'s `CALL` to `doResponse()`. Looking
 at IDA's "Graph overview" window, we see where in the mess that is
@@ -515,7 +515,7 @@ at IDA's "Graph overview" window, we see where in the mess that is
 rather than going hunting!
 
 ![`handleConnection()`'s graph
-overview](dostackbufferoverflowgood_images/ida_handleconnection_graph_overview.png)
+overview](../dostackbufferoverflowgood_images/ida_handleconnection_graph_overview.png)
 
 \newpage
 
@@ -524,14 +524,14 @@ its behaviour in Immunity, but the graph view of the `CALL` doesn't display the
 address of the instruction.
 
 ![`handleConnection()`'s `CALL` to
-`doResponse()`](dostackbufferoverflowgood_images/ida_doresponse_call.png)
+`doResponse()`](../dostackbufferoverflowgood_images/ida_doresponse_call.png)
 
 Highlight the instruction and press `Spacebar` to head to the linear
 disassembly view where the address of each instruction is listed. Here, we can
 see the exact address of the `CALL` instruction is `0x0804168D`
 
 ![Linear view of `handleConnection()`'s `CALL` to
-`doResponse()`](dostackbufferoverflowgood_images/ida_doresponse_call_linear.png)
+`doResponse()`](../dostackbufferoverflowgood_images/ida_doresponse_call_linear.png)
 
 Notice how we never paid much attention to the address of `doResponse()`'s
 function prologue. Even though we'll want to step through `doResponse()`'s
@@ -585,7 +585,7 @@ Open the Breakpoints window by going to `View -> Breakpoints` (hotkey `Alt-B`)
 to confirm that both breakpoints have been set.
 
 ![Viewing our breakpoints in the Breakpoints window
-(`Alt-B`)](dostackbufferoverflowgood_images/immdbg_breakpoints.png)
+(`Alt-B`)](../dostackbufferoverflowgood_images/immdbg_breakpoints.png)
 
 If the process isn't already running (you can check if it is in the bottom
 right-hand corner of Immunity) then whack the `"Run program"` button or press
@@ -598,7 +598,7 @@ two breakpoints will be hit, and Immunity will tell us that the program is now
 Paused.
 
 ![A hit on the `CALL doResponse()`
-breakpoint](dostackbufferoverflowgood_images/immdbg_breakpoint_call.png)
+breakpoint](../dostackbufferoverflowgood_images/immdbg_breakpoint_call.png)
 
 \newpage
 
@@ -963,7 +963,7 @@ Running this:
 We get a crash in Immunity!
 
 ![Crashy crashy. `EIP` = `0x41414141`
-("AAAA")](dostackbufferoverflowgood_images/immdbg_0x41414141.png)
+("AAAA")](../dostackbufferoverflowgood_images/immdbg_0x41414141.png)
 
 Note the status bar informing us of an Access Violation when executing
 `0x41414141`, and the presence of `0x41414141` in the `EIP` register. `0x41` is
@@ -977,7 +977,7 @@ Be sure to restart (`Ctrl-F2`) the program before trying to connect to it again
 then pound `F9` to get it up and running.
 
 !["Restart Program"
-button (hotkey `Ctrl-F2`)](dostackbufferoverflowgood_images/immdbg_restartprocess.png)
+button (hotkey `Ctrl-F2`)](../dostackbufferoverflowgood_images/immdbg_restartprocess.png)
 
 \newpage
 # Discover offsets
@@ -1074,7 +1074,7 @@ We get a somewhat different crash this time. Instead of `0x41414141` (`"AAAA"`)
 being in `EIP`, we have `0x39654138` (`"9eA8"`).
 
 ![Different crashy crashy. `EIP` = `0x39654138`
-("9eA8")](dostackbufferoverflowgood_images/immdbg_0x39654138.png)
+("9eA8")](../dostackbufferoverflowgood_images/immdbg_0x39654138.png)
 
 \newpage
 
@@ -1101,7 +1101,7 @@ somewhere in a copy of the pattern, and much much more.
 `mona.py` commands are run via the command input at the bottom of Immunity
 Debugger and are prefixed with `"!mona"`.
 
-![`mona.py`'s `findmsp`](dostackbufferoverflowgood_images/immdbg_findmsp.png)
+![`mona.py`'s `findmsp`](../dostackbufferoverflowgood_images/immdbg_findmsp.png)
 
 The output (viewable in Immunity's Log Data window) tells us, among other
 things, that:
@@ -1220,7 +1220,7 @@ characters. Just as expected.
 
 This is known as having "`EIP` control".
 
-![EIP control](dostackbufferoverflowgood_images/immdbg_eip_control.png)
+![EIP control](../dostackbufferoverflowgood_images/immdbg_eip_control.png)
 
 \newpage
 # Determine "bad characters"
@@ -1349,7 +1349,7 @@ We also get a crash in Immunity. With this crash, `ESP` seems to be pointing to
 (i.e. at the top of the stack is) a copy of our test string.
 
 ![Our `badchar_test` string in
-Immunity](dostackbufferoverflowgood_images/immdbg_badchars.png)
+Immunity](../dostackbufferoverflowgood_images/immdbg_badchars.png)
 
 Note that Immunity Debugger reverses the order of items on the stack due to
 Intel's little endian-ness. We'll cover what "little endian" means shortly.
@@ -1358,7 +1358,7 @@ right-click on `ESP` in the registers list and click "Follow in Dump", you'll
 see it's front-to-back in the area of memory used by the stack.
 
 ![Doing a `Follow in Dump` on our `badchar_test`
-string](dostackbufferoverflowgood_images/immdbg_badchars_follow_in_dump.png)
+string](../dostackbufferoverflowgood_images/immdbg_badchars_follow_in_dump.png)
 
 \newpage
 
@@ -1378,7 +1378,7 @@ Put `badchar_test.bin` somewhere on the Windows box (e.g. in `c:\`) and run:
 are `\x00` and `\x0A`
 
 ![`mona.py` comparing our `badchar_test` string to the binary copy on
-disk](dostackbufferoverflowgood_images/immdbg_badchars_mona_compare.png)
+disk](../dostackbufferoverflowgood_images/immdbg_badchars_mona_compare.png)
 
 \newpage
 # `RET` to `"JMP ESP"`
@@ -1477,7 +1477,7 @@ for `"JMP ESP"` gadgets. It tells us that there are `"JMP ESP"` gadgets within
 * `0x080416BF`
 
 ![`mona.py` finding us some `"JMP ESP"`
-gadgets`](dostackbufferoverflowgood_images/immdbg_mona_jmp.png)
+gadgets`](../dostackbufferoverflowgood_images/immdbg_mona_jmp.png)
 
 \framebox{
   \parbox{\textwidth}{
@@ -1493,7 +1493,7 @@ Right-clicking on one of these pointers in the "Log data" window and clicking
 at that memory location.
 
 ![Doing a `Follow in Disassembler` on one of `mona.py`'s `"JMP ESP"`
-gadgets`](dostackbufferoverflowgood_images/immdbg_mona_jmp_follow_in_disassembler.png)
+gadgets`](../dostackbufferoverflowgood_images/immdbg_mona_jmp_follow_in_disassembler.png)
 
 Thus, if we overwrite the Saved Return Pointer with either of these addresses,
 then after `doResponse()` tries to `RET`urn to the overwritten Saved Return
@@ -1636,7 +1636,7 @@ seem to disassemble it as an actual `"INT 3"`. Disassembling backwards is hard
 because x86 instructions are variable-length.
 
 ![Immunity informing us of `"INT 3"` Remote Code Execution achievement
-unlocked](dostackbufferoverflowgood_images/immdbg_int3.png)
+unlocked](../dostackbufferoverflowgood_images/immdbg_int3.png)
 
 In doing this, we've technically achieved Remote Code Execution, it's just that
 the Code we're Remotely Executing isn't terribly useful to us (yet). Give
@@ -2062,7 +2062,7 @@ calculator.
 
 Well done :)
 
-![Calc for days](dostackbufferoverflowgood_images/immdbg_calc_popped.png)
+![Calc for days](../dostackbufferoverflowgood_images/immdbg_calc_popped.png)
 
 \newpage
 # Get a shell / Outro
@@ -2108,4 +2108,4 @@ Justin
 
 ![This work is licensed under a Creative Commons Attribution 4.0 International
 License
-<https://creativecommons.org/licenses/by/4.0/>](dostackbufferoverflowgood_images/cc4-by.png)
+<https://creativecommons.org/licenses/by/4.0/>](../dostackbufferoverflowgood_images/cc4-by.png)
